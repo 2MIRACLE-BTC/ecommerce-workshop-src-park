@@ -39,7 +39,7 @@ jobs:
         id: image-info
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: frontend
+          ECR_REPOSITORY: park-frontend
           IMAGE_TAG: ${{ steps.image.outputs.version }}
         run: |
           echo "::set-output name=ecr_repository::$ECR_REPOSITORY"
@@ -57,10 +57,10 @@ jobs:
       - name: Checkout kustomize repository
         uses: actions/checkout@v2
         with:
-          repository:  2MIRACLE-BTC/ecommerce-workshop-k8s-manifest
+          repository:  2MIRACLE-BTC/ecommerce-workshop-park
           ref: main
           token: ${{ secrets.ACTION_TOKEN }}
-          path: ecommerce-workshop-k8s-manifest
+          path: ecommerce-workshop-park
       - name: Update Kubernetes resources
         run: |
           echo ${{ steps.login-ecr.outputs.registry }}
@@ -72,7 +72,7 @@ jobs:
 
       - name: Commit files
         run: |
-          cd ecommerce-workshop-k8s-manifest
+          cd ecommerce-workshop-park
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
           git commit -am "Update image tag"
