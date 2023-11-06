@@ -37,13 +37,13 @@ jobs:
         id: image-info
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ads_v2
+          ECR_REPOSITORY: park-advertisements02
           IMAGE_TAG: ${{ steps.image.outputs.version }}
         run: |
           echo "::set-output name=ecr_repository::$ECR_REPOSITORY"
           echo "::set-output name=image_tag::$IMAGE_TAG"
           pwd
-          cd store-advertisement/ads_v2_1
+          cd store-advertisement/park-advertisements02
           pwd
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -55,22 +55,22 @@ jobs:
       - name: Checkout kustomize repository
         uses: actions/checkout@v2
         with:
-          repository:  2MIRACLE-BTC/ecommerce-workshop-k8s-manifest
+          repository:  2MIRACLE-BTC/ecommerce-workshop-park
           ref: main
           token: ${{ secrets.ACTION_TOKEN }}
-          path: ecommerce-workshop-k8s-manifest
+          path: ecommerce-workshop-park
       - name: Update Kubernetes resources
         run: |
           echo ${{ steps.login-ecr.outputs.registry }}
           echo ${{ steps.image-info.outputs.ecr_repository }}
           echo ${{ steps.image-info.outputs.image_tag }}
-          cd ecommerce-workshop-k8s-manifest/overlays/dev/
+          cd ecommerce-workshop-park/overlays/dev/
           kustomize edit set image ${{ steps.login-ecr.outputs.registry}}/${{ steps.image-info.outputs.ecr_repository }}=${{ steps.login-ecr.outputs.registry}}/${{ steps.image-info.outputs.ecr_repository }}:${{ steps.image-info.outputs.image_tag }}
           cat kustomization.yaml
 
       - name: Commit files
         run: |
-          cd ecommerce-workshop-k8s-manifest
+          cd ecommerce-workshop-park
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
           git commit -am "Update image tag"
